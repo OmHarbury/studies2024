@@ -5,16 +5,25 @@ import org.team100.lib.sensors.LSM6DSOX_I2C;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
+import java.io.Console;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.control.FieldRelativeLaundryStick;
 import frc.robot.control.RobotRelativeLaundryStick;
 import frc.robot.subsystems.DirectLaundryDrive;
@@ -36,60 +45,40 @@ public class Robot extends TimedRobot {
 
     private final LaundryDrive m_drive;
     private final LaundryArm m_arm;
+    JoystickButton button;
+    JoystickButton wheelButton;
+
+    VictorSP wheelDrive;
+    VictorSP wheelDrive2;
+
+    // Solenoid exampleSolenoidPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+    // DoubleSolenoid exampleDoublePCM = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+    
+    Solenoid exampleSolenoidPCM = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    Solenoid exampleSolenoidPCM1 = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+
+
+    // private final PWM pwm = new PWM(5);
 
     public Robot() {
         DataLogManager.start();
         
         Talon leftMotor = new Talon(0);
         Talon rightMotor = new Talon(1);
+
+         wheelDrive = new VictorSP(2);
+         wheelDrive2 = new VictorSP(3);
+
+        
+
         leftMotor.setInverted(true);
         rightMotor.setInverted(false);
         DifferentialDrive drive = new DifferentialDrive(leftMotor, rightMotor);
 
-        if (kFieldRelative) {
-            LSM6DSOX_I2C gyro = new LSM6DSOX_I2C();
-            AHRS ahrs = new AHRS(gyro);
-            // Joystick joystick = new Joystick(0);
-            CommandXboxController controller = new CommandXboxController(0);
-            FieldRelativeLaundryStick stick = new FieldRelativeLaundryStick(controller);
-            m_drive = new FieldRelativeLaundryDrive(
-                    ahrs,
-                    stick::reset,
-                    stick::xSpeed1_1,
-                    stick::ySpeed1_1,
-                    drive);
-            CANSparkMax armMotor = new CANSparkMax(2, MotorType.kBrushless);
-            ProfiledPIDController armController = new ProfiledPIDController(
-                    1.5, // P
-                    0, // I
-                    0, // D
-                    new Constraints(
-                            1, // max velocity
-                            1)); // max accel
-            m_arm = new LaundryArm(stick::dump, armController, armMotor);
-        } else if (kStabilize) {
-            LSM6DSOX_I2C gyro = new LSM6DSOX_I2C();
             Joystick joystick = new Joystick(0);
-            RobotRelativeLaundryStick stick = new RobotRelativeLaundryStick(joystick);
-            // TODO: tune yaw stabilizer PID
-            PIDController yawController = new PIDController(1, 0, 0);
-            m_drive = new StabilizedLaundryDrive(
-                    gyro,
-                    stick::xSpeed1_1,
-                    stick::zSpeed1_1,
-                    yawController,
-                    drive);
-            CANSparkMax armMotor = new CANSparkMax(2, MotorType.kBrushless);
-            ProfiledPIDController armController = new ProfiledPIDController(
-                    1.5, // P
-                    0, // I
-                    0, // D
-                    new Constraints(
-                            1, // max velocity (infinite)
-                            1)); // max accel (infinite)
-            m_arm = new LaundryArm(stick::dump, armController, armMotor);
-        } else {
-            Joystick joystick = new Joystick(0);
+
+            button = new JoystickButton(joystick, 1);
+            wheelButton = new JoystickButton(joystick, 5);
             RobotRelativeLaundryStick stick = new RobotRelativeLaundryStick(joystick);
             m_drive = new DirectLaundryDrive(
                     stick::xSpeed1_1,
@@ -105,7 +94,7 @@ public class Robot extends TimedRobot {
                             1, // max velocity (infinite)
                             1)); // max accel (infinite)
             m_arm = new LaundryArm(stick::dump, armController, armMotor);
-        }
+        
     }
     @Override
     public void autonomousInit() {
@@ -138,5 +127,31 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         m_drive.teleopPeriodic();
         m_arm.periodic();
+
+        if(wheelButton.getAsBoolean()){
+            System.out.println("AHHHHHHHHHH");
+
+            wheelDrive.set(1);
+            wheelDrive2.set(-1);
+
+        } else {
+            System.out.println("BOOOO");
+
+            wheelDrive.set(0);
+            wheelDrive2.set(0);
+        }
+
+
+        // exampleSolenoidPCM.set(true);
+
+        if(button.getAsBoolean()){
+            exampleSolenoidPCM1.set(true);
+            exampleSolenoidPCM.set(false);
+        } else{
+            exampleSolenoidPCM1.set(false);
+            exampleSolenoidPCM.set(true);
+        }
     }
+
+    
 }

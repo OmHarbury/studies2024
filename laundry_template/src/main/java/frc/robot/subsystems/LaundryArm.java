@@ -115,7 +115,7 @@ public class LaundryArm extends Subsystem {
     }
 
     private void dump() {
-        setGoalTurns(-0.25);
+        setGoalTurns(-0.3);
     }
 
     private void setGoalTurns(double goalTurns) {

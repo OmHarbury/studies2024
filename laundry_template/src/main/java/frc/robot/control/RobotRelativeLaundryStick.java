@@ -25,9 +25,9 @@ public class RobotRelativeLaundryStick {
     // TODO: change this to meters/sec
     public double xSpeed1_1() {
         if(m_controller == null){
-            return -0.8 * m_stick.getY();
+            return 0.8 * m_stick.getY();
         } else if(m_stick == null){
-            return -0.8 * m_controller.getLeftY();
+            return 0.8 * m_controller.getLeftY();
         }
 
         return 0;
@@ -35,6 +35,6 @@ public class RobotRelativeLaundryStick {
 
     // TODO: change this to radians/sec
     public double zSpeed1_1() {
-        return -0.65 * m_stick.getX();
+        return 0.65 * m_stick.getX();
     }
 }

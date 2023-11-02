@@ -21,5 +21,10 @@ public final class Main {
    */
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
+
   }
+
+  // public static void calcAngle(double x, double y){
+  //   double q2 = Math.acos((Math.pow(x, 2) + Math.pow(y,2) - Math.pow(144, 2) - Math.pow(185,2))/(2.0*185*144));
+  //   double q1 = Math.atan(y/x) - Math.atan((144*Math.sin(q2))/(144+ 185*Math.cos(q2)));
 }

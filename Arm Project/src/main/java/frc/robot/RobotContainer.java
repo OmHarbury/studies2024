@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  public final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -50,18 +50,22 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand1(.01));
-    m_driverController.a().whileTrue(m_exampleSubsystem.exampleMethodCommand1(-0.01));
-    m_driverController.x().whileTrue(m_exampleSubsystem.exampleMethodCommand2(.01));
-    m_driverController.y().whileTrue(m_exampleSubsystem.exampleMethodCommand2(-0.01));
-    m_driverController.rightTrigger().whileTrue(m_exampleSubsystem.exampleMethodCommand4(.01));
-    m_driverController.leftTrigger().whileTrue(m_exampleSubsystem.exampleMethodCommand4(-0.01));
+  //   m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand1(.01));
+  //   m_driverController.a().whileTrue(m_exampleSubsystem.exampleMethodCommand1(-0.01));
+  //   m_driverController.x().whileTrue(m_exampleSubsystem.exampleMethodCommand2(.01));
+  //   m_driverController.y().whileTrue(m_exampleSubsystem.exampleMethodCommand2(-0.01));
+  //   m_driverController.rightTrigger().whileTrue(m_exampleSubsystem.exampleMethodCommand4(.01));
+  //   m_driverController.leftTrigger().whileTrue(m_exampleSubsystem.exampleMethodCommand4(-0.01));
     m_driverController2.b().whileTrue(m_exampleSubsystem.exampleMethodCommand3(.01));
     m_driverController2.a().whileTrue(m_exampleSubsystem.exampleMethodCommand3(-0.01));
     m_driverController2.x().whileTrue(m_exampleSubsystem.exampleMethodCommand5(.01));
     m_driverController2.y().whileTrue(m_exampleSubsystem.exampleMethodCommand5(-0.01));
     m_driverController2.leftTrigger().whileTrue(m_exampleSubsystem.exampleMethodCommand6(.01));
     m_driverController2.rightTrigger().whileTrue(m_exampleSubsystem.exampleMethodCommand6(-0.01));
+    m_driverController.x().whileTrue(m_exampleSubsystem.inverseKinematics(200, -50));
+    // m_driverController.povUp().whileTrue(m_exampleSubsystem.exampleMethodCommand10(0.01));
+    // m_driverController.povDown().whileTrue(m_exampleSubsystem.exampleMethodCommand10(-0.01));
+    
     // m_driverController.b().whileTrue(new InstantCommand(()->{System.out.println("asdfasdflk");}));
   }
 
